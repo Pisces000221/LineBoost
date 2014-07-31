@@ -3,15 +3,16 @@ var StartupScene = cc.Scene.extend({
         this._super();
         var size = cc.director.getWinSize();
 
-        var total_d = 0;
-        var label = cc.LabelTTF.create('0 px', '', 40);
-        label.setPosition(size.width / 2, size.height / 2);
-        this.addChild(label);
-
         var t = lboost.Track.create();
-        t.appendTournant(cc.p(100, 50));
-        t.appendTournant(cc.p(30, 80));
+        t.appendTournant(0, 0);
+        t.setPosition(size.width / 2, size.height / 2);
         this.addChild(t);
+        var b = lboost.board.create();
+        var path = b.fill();
+        for (i = 0; i < path.length; i++) {
+            t.appendTournant(path[i].x, path[i].y);
+            console.log(path[i].x + ' ' + path[i].y);
+        }
 
         cc.eventManager.addListener({
             event: cc.EventListener.TOUCH_ONE_BY_ONE,
@@ -19,9 +20,7 @@ var StartupScene = cc.Scene.extend({
                 return true;
             },
             onTouchMoved: function(touch, event) {
-                var p = touch.getDelta();
-                total_d += Math.sqrt(p.x * p.x + p.y * p.y);
-                label.setString(Math.round(total_d).toString() + ' px');
+                t.setPosition(cc.pAdd(t.getPosition(), touch.getDelta()));
             },
             onTouchEnded: function(touch, event) {
             }
