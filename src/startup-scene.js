@@ -8,6 +8,11 @@ var StartupScene = cc.Scene.extend({
         label.setPosition(size.width / 2, size.height / 2);
         this.addChild(label);
 
+        var t = lboost.Track.create();
+        t.appendTournant(cc.p(100, 50));
+        t.appendTournant(cc.p(30, 80));
+        this.addChild(t);
+
         cc.eventManager.addListener({
             event: cc.EventListener.TOUCH_ONE_BY_ONE,
             onTouchBegan: function(touch, event) {
