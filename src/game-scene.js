@@ -20,6 +20,16 @@ lboost.GameScene = cc.Scene.extend({
         var size = cc.director.getWinSize();
         var __parent = this;
 
+        // call to end the game
+        this.endGame = function(title) {
+            for (var i = 0; i < 4; i++) {
+                this.getChildByTag(10880 + i).setEnabled(false);
+            }
+            // turn off scheduler
+            this.unschedule(updateTime);
+            this.addChild(lboost.GameOverDialogue.create(title, lboost.gameTime - timeRemaining, curTournantIdx), 1000);
+        }
+
         // the score display (always on the top)
         var scoreLabel = cc.LabelTTF.create('00', '', 48);
         scoreLabel.setPosition(size.width / 2, size.height * 0.9);
@@ -34,6 +44,10 @@ lboost.GameScene = cc.Scene.extend({
         var updateTime = function(dt) {
             timeRemaining -= dt;
             timeLabel.setString(timeRemaining.toFixed(1).toString() + ' s');
+            if (timeRemaining < 0) {
+                timeRemaining = 0;  // prevent things like 20.02s in game over dialogue
+                this.endGame('Time up!!');
+            }
         }
         this.schedule(updateTime, 0.1);
 
@@ -83,15 +97,9 @@ lboost.GameScene = cc.Scene.extend({
                 // ouch!!
                 t2.themeColour = cc.color(255, 64, 64);
                 arrow.setColor(cc.color(128, 128, 128));
-                for (var i = 0; i < 4; i++) {
-                    __parent.getChildByTag(10880 + i).setEnabled(false);
-                }
-                // turn off scheduler
-                __parent.unschedule(updateTime);
                 // we don't count the last (wrong) one, so the score is curTournantIdx - 1
-                __parent.addChild(lboost.GameOverDialogue.create(lboost.gameTime - timeRemaining, curTournantIdx - 1), 1000);
-                //__parent.removeAllChildren(true);
-                //__parent.onEnter();
+                curTournantIdx--;
+                __parent.endGame('Ouch!!');
             } else {
                 // update score display
                 scoreLabel.setString((curTournantIdx < 10 ? '0' : '') + curTournantIdx.toString());

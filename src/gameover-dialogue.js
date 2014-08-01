@@ -3,14 +3,14 @@ lboost.S_if_plural = function(n) {
 }
 
 lboost.GameOverDialogue = cc.LayerColor.extend({
-    time: 0, score: 0,
+    title: '', time: 0, score: 0,
     onEnter: function() {
         this._super();
         this.setColor(cc.color(0, 0, 0, 192));
         var size = cc.director.getWinSize();
 
         // the labels
-        var lbl1 = cc.LabelTTF.create('Ouch!!', '', 48);
+        var lbl1 = cc.LabelTTF.create(this.title, '', 48);
         lbl1.setPosition(size.width / 2, size.height * 0.9);
         lbl1.setColor(cc.color(255, 64, 64));
         this.addChild(lbl1);
@@ -39,8 +39,8 @@ lboost.GameOverDialogue = cc.LayerColor.extend({
     }
 });
 
-lboost.GameOverDialogue.create = function(time, score) {
+lboost.GameOverDialogue.create = function(title, time, score) {
     var god = new lboost.GameOverDialogue();
-    god.time = time; god.score = score;
+    god.time = time; god.score = score; god.title = title;
     return god;
 }
