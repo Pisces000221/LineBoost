@@ -18,6 +18,12 @@ var StartupScene = cc.Scene.extend({
         this._super();
         var size = cc.director.getWinSize();
 
+        // the score display (always on the top)
+        var scoreLabel = cc.LabelTTF.create('0', '', 48);
+        scoreLabel.setPosition(size.width / 2, size.height * 0.9);
+        scoreLabel.setColor(cc.color(64, 255, 64));
+        this.addChild(scoreLabel, 100);
+
         // create the white track
         var t = lboost.Track.create();
         t.appendTournant(0, 0);
@@ -38,7 +44,7 @@ var StartupScene = cc.Scene.extend({
         arrow.setAnchorPoint(cc.p(0.5, 0));
         t.addChild(arrow);
 
-        var curTournantIdx = 0; // index of the player's current tournant
+        var curTournantIdx = 0; // index of the player's current tournant. it's also the score
         var turn = [[3, 0, 0, 2], [2, 1, 1, 3], [0, 2, 2, 1], [1, 3, 3, 0]];
         var rotation = [270, 90, 0, 180];
         var cur_direction = 2;  // start facing up
@@ -58,6 +64,8 @@ var StartupScene = cc.Scene.extend({
                 // ouch!!
                 t2.themeColour = cc.color(255, 64, 64);
                 arrow.setColor(cc.color(128, 128, 128));
+            } else {
+                scoreLabel.setString(curTournantIdx.toString());
             }
             t2.appendTournant(b.visible_centre.x, b.visible_centre.y);
             // fill the board again
