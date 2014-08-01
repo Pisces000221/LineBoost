@@ -33,23 +33,31 @@ var StartupScene = cc.Scene.extend({
         for (i = 0; i < path.length; i++) {
             t.appendTournant(path[i].x, path[i].y);
         }
+        // create the arrow
+        var arrow = cc.Sprite.create('res/arrow.png');
+        arrow.setAnchorPoint(cc.p(0.5, 0));
+        t.addChild(arrow);
 
         var curTournantIdx = 0; // index of the player's current tournant
         var turn = [[3, 0, 0, 2], [2, 1, 1, 3], [0, 2, 2, 1], [1, 3, 3, 0]];
+        var rotation = [270, 90, 0, 180];
         var cur_direction = 2;  // start facing up
         // behaviour when tapped on the control buttons
         var dostep = function(idx) {
             // turn according to the button tapped.
             // if idx is 1 or 2 (tapped 'go straight ahead'), cur_direction will not change.
             cur_direction = turn[cur_direction][idx];
+            arrow.setRotation(rotation[cur_direction]);
             // move
             b.visible_centre = cc.pAdd(b.visible_centre, lboost.board.move[cur_direction]);
+            arrow.setPosition(lboost.dataPosToGLPos(b.visible_centre));
             t.runAction(cc.EaseSineOut.create(cc.MoveTo.create(
                 0.15, cc.pSub(cc.p(size.width / 2, size.height / 2), lboost.dataPosToGLPos(b.visible_centre)))));
             // lose?
             if (!cc.pFuzzyEqual(b.visible_centre, t.tournants[++curTournantIdx], 0)) {
                 // ouch!!
                 t2.themeColour = cc.color(255, 64, 64);
+                arrow.setColor(cc.color(128, 128, 128));
             }
             t2.appendTournant(b.visible_centre.x, b.visible_centre.y);
             // fill the board again
