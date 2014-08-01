@@ -13,6 +13,7 @@ lboost.control_button = function(idx, callback) {
     return menu;
 };
 
+lboost.gameTime = 20;
 lboost.GameScene = cc.Scene.extend({
     onEnter: function () {
         this._super();
@@ -24,6 +25,17 @@ lboost.GameScene = cc.Scene.extend({
         scoreLabel.setPosition(size.width / 2, size.height * 0.9);
         scoreLabel.setColor(cc.color(64, 255, 64));
         this.addChild(scoreLabel, 100);
+        // the time display
+        var timeRemaining = lboost.gameTime;
+        var timeLabel = cc.LabelTTF.create(timeRemaining + ' s', '', 36);
+        timeLabel.setPosition(size.width / 2, size.height * 0.8);
+        timeLabel.setColor(cc.color(64, 255, 64));
+        this.addChild(timeLabel, 100);
+        var updateTime = function(dt) {
+            timeRemaining -= dt;
+            timeLabel.setString(timeRemaining.toFixed(1).toString() + ' s');
+        }
+        this.schedule(updateTime, 0.1);
 
         // create the white track
         var t = lboost.Track.create();
@@ -74,7 +86,10 @@ lboost.GameScene = cc.Scene.extend({
                 for (var i = 0; i < 4; i++) {
                     __parent.getChildByTag(10880 + i).setEnabled(false);
                 }
-                __parent.addChild(lboost.GameOverDialogue.create(0.8, curTournantIdx), 1000);
+                // turn off scheduler
+                __parent.unschedule(updateTime);
+                // we don't count the last (wrong) one, so the score is curTournantIdx - 1
+                __parent.addChild(lboost.GameOverDialogue.create(lboost.gameTime - timeRemaining, curTournantIdx - 1), 1000);
                 //__parent.removeAllChildren(true);
                 //__parent.onEnter();
             } else {
