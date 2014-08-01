@@ -1,10 +1,8 @@
 lboost.board = {
     direction: { LEFT: 0, RIGHT: 1, UP: 2, DOWN: 3 },
-    valid_nextstep: new Array(
-        new Array(2, 3), new Array(2, 3),
-        new Array(0, 1), new Array(0, 1)),
-    move: new Array(cc.p(-1, 0), cc.p(1, 0), cc.p(0, 1), cc.p(0, -1),
-        cc.p(1, 1), cc.p(1, -1), cc.p(-1, 1), cc.p(-1, -1)),
+    valid_nextstep: [[2, 3], [2, 3], [0, 1], [0, 1]],
+    move: [cc.p(-1, 0), cc.p(1, 0), cc.p(0, 1), cc.p(0, -1),
+        cc.p(1, 1), cc.p(1, -1), cc.p(-1, 1), cc.p(-1, -1)],
     turn_possib: 0.25,
     create: function() {
         var board = {};

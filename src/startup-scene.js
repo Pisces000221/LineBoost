@@ -11,39 +11,52 @@ lboost.control_button = function(idx, callback) {
     var menu = cc.Menu.create(item);
     menu.setPosition(cc.p(0, 0));
     return menu;
-}
+};
+
 var StartupScene = cc.Scene.extend({
     onEnter: function () {
         this._super();
         var size = cc.director.getWinSize();
 
-        // create the track
+        // create the white track
         var t = lboost.Track.create();
         t.appendTournant(0, 0);
         t.setPosition(size.width / 2, size.height / 2);
         this.addChild(t);
+        // t2 is the blue track, used to display the player's moves
         var t2 = lboost.Track.create();
         t2.themeColour = cc.color(96, 96, 255);
         t2.appendTournant(0, 0);
         t.addChild(t2);
         var b = lboost.board.create();
         var path = b.fill(true);
-        var curTournantIdx = 0;
         for (i = 0; i < path.length; i++) {
             t.appendTournant(path[i].x, path[i].y);
         }
 
+        var curTournantIdx = 0; // index of the player's current tournant
+        var turn = [[3, 0, 0, 2], [2, 1, 1, 3], [0, 2, 2, 1], [1, 3, 3, 0]];
+        var cur_direction = 2;  // start facing up
         // behaviour when tapped on the control buttons
         var dostep = function(idx) {
-            b.visible_centre = t.tournants[++curTournantIdx];
-            console.log(curTournantIdx + ' ' + b.visible_centre.x + ' ' + b.visible_centre.y);
+            // turn according to the button tapped.
+            // if idx is 1 or 2 (tapped 'go straight ahead'), cur_direction will not change.
+            cur_direction = turn[cur_direction][idx];
+            // move
+            b.visible_centre = cc.pAdd(b.visible_centre, lboost.board.move[cur_direction]);
+            t.runAction(cc.EaseSineOut.create(cc.MoveTo.create(
+                0.15, cc.pSub(cc.p(size.width / 2, size.height / 2), lboost.dataPosToGLPos(b.visible_centre)))));
+            // lose?
+            if (!cc.pFuzzyEqual(b.visible_centre, t.tournants[++curTournantIdx], 0)) {
+                // ouch!!
+                t2.themeColour = cc.color(255, 64, 64);
+            }
             t2.appendTournant(b.visible_centre.x, b.visible_centre.y);
+            // fill the board again
             var path = b.fill();
             for (i = 0; i < path.length; i++) {
                 t.appendTournant(path[i].x, path[i].y);
             }
-            t.runAction(cc.EaseSineOut.create(cc.MoveTo.create(
-                0.15, cc.pSub(cc.p(size.width / 2, size.height / 2), lboost.dataPosToGLPos(b.visible_centre)))));
             return true;
         }
         // add control buttons. stay on the top
