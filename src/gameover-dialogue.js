@@ -26,6 +26,9 @@ lboost.GameOverDialogue = cc.LayerColor.extend({
         var shareItem = cc.MenuItemLabel.create(
             cc.LabelTTF.create('分享成绩到朋友圈', '', 32), function() {
                 console.log('TODO: share');
+                // http://www.cnblogs.com/imhurley/archive/2012/03/14/2395720.html
+                document.title = '我在Line Boost中用' + this.time.toFixed(2) + '秒通过了' + this.score + '个点，'
+                    + '速度为' + (this.score / this.time).toFixed(2) + '个点/秒！你也来试试？'
             }, this);
         shareItem.setPosition(size.width / 2, size.height * 0.3);
         var retryItem = cc.MenuItemLabel.create(
