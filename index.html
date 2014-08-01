@@ -13,6 +13,8 @@
     <script type='text/javascript' src='src/board.js'></script>
     <script type='text/javascript' src='src/track.js'></script>
     <script type='text/javascript' src='src/startup-scene.js'></script>
+    <script type='text/javascript' src='src/game-scene.js'></script>
+    <script type='text/javascript' src='src/gameover-dialogue.js'></script>
 </head>
 <body>
     <canvas id='game_canvas'></canvas>
@@ -29,7 +31,7 @@
                 cc.view.resizeWithBrowserSize(true);
                 // load resources
                 cc.LoaderScene.preload([], function () {
-                cc.director.runScene(new StartupScene());
+                    cc.director.runScene(new lboost.StartupScene());
                 }, this);
             };
             cc.game.run('game_canvas');

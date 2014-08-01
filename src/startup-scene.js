@@ -1,89 +1,32 @@
-lboost.control_button = function(idx, callback) {
-    var images = new Array('res/turn.png', 'res/straight.png', 'res/straight.png', 'res/turn.png');
-    var item = cc.MenuItemImage.create(images[idx], images[idx],
-        function() { callback(idx); });
-    item.setAnchorPoint(cc.p(0, 0));
-    item.setPosition(cc.p(80 * idx, 0));
-    if (idx >= 2) {
-        item.getNormalImage().setFlippedX(true);
-        item.getSelectedImage().setFlippedX(true);
-    }
-    var menu = cc.Menu.create(item);
-    menu.setPosition(cc.p(0, 0));
-    return menu;
-};
-
-var StartupScene = cc.Scene.extend({
+lboost.StartupScene = cc.Scene.extend({
     onEnter: function () {
         this._super();
         var size = cc.director.getWinSize();
+        var __parent = this;
 
-        // the score display (always on the top)
-        var scoreLabel = cc.LabelTTF.create('00', '', 48);
-        scoreLabel.setPosition(size.width / 2, size.height * 0.9);
-        scoreLabel.setColor(cc.color(64, 255, 64));
-        this.addChild(scoreLabel, 100);
+        // the title
+        var titleLabel = cc.LabelTTF.create('Line Boost', '', 58);
+        titleLabel.setPosition(size.width / 2, size.height * 0.8);
+        this.addChild(titleLabel);
+        var descLabel = cc.LabelTTF.create('Tap to start', '', 36);
+        descLabel.setPosition(size.width / 2, size.height * 0.4);
+        descLabel.setOpacity(0);
+        this.addChild(descLabel);
+        descLabel.runAction(cc.Sequence.create(
+            cc.DelayTime.create(1),
+            cc.FadeIn.create(1.2 * 255 / 192),
+            cc.CallFunc.create(function() {
+                descLabel.runAction(cc.RepeatForever.create(cc.Sequence.create(
+                cc.FadeTo.create(1.2, 192), cc.FadeTo.create(1.2, 255))));
+            })
+        ));
 
-        // create the white track
-        var t = lboost.Track.create();
-        t.appendTournant(0, 0);
-        t.setPosition(size.width / 2, size.height / 2);
-        this.addChild(t);
-        // t2 is the blue track, used to display the player's moves
-        var t2 = lboost.Track.create();
-        t2.themeColour = cc.color(96, 96, 255);
-        t2.appendTournant(0, 0);
-        t.addChild(t2);
-        var b = lboost.board.create();
-        var path = b.fill(true);
-        for (i = 0; i < path.length; i++) {
-            t.appendTournant(path[i].x, path[i].y);
-        }
-        // create the arrow
-        var arrow = cc.Sprite.create('res/arrow.png');
-        arrow.setAnchorPoint(cc.p(0.5, 0));
-        t.addChild(arrow);
-
-        var curTournantIdx = 0; // index of the player's current tournant. it's also the score
-        var turn = [[3, 0, 0, 2], [2, 1, 1, 3], [0, 2, 2, 1], [1, 3, 3, 0]];
-        var rotation = [270, 90, 0, 180];
-        var cur_direction;
-        for (var i = 0; i < 4; i++)
-            if (cc.pFuzzyEqual(lboost.board.move[i], path[0], 0)) {
-                cur_direction = i;
-                break;
+        cc.eventManager.addListener({
+            event: cc.EventListener.TOUCH_ONE_BY_ONE,
+            onTouchBegan: function(touch, event) {
+                cc.director.runScene(cc.TransitionFade.create(1, new lboost.GameScene(), cc.color(0, 0, 0)));
+                return true;
             }
-        arrow.setRotation(rotation[cur_direction]);
-        // behaviour when tapped on the control buttons
-        var dostep = function(idx) {
-            // turn according to the button tapped.
-            // if idx is 1 or 2 (tapped 'go straight ahead'), cur_direction will not change.
-            cur_direction = turn[cur_direction][idx];
-            arrow.setRotation(rotation[cur_direction]);
-            // move
-            b.visible_centre = cc.pAdd(b.visible_centre, lboost.board.move[cur_direction]);
-            arrow.setPosition(lboost.dataPosToGLPos(b.visible_centre));
-            t.runAction(cc.EaseSineOut.create(cc.MoveTo.create(
-                0.15, cc.pSub(cc.p(size.width / 2, size.height / 2), lboost.dataPosToGLPos(b.visible_centre)))));
-            // lose?
-            if (!cc.pFuzzyEqual(b.visible_centre, t.tournants[++curTournantIdx], 0)) {
-                // ouch!!
-                t2.themeColour = cc.color(255, 64, 64);
-                arrow.setColor(cc.color(128, 128, 128));
-            } else {
-                // update score display
-                scoreLabel.setString((curTournantIdx < 10 ? '0' : '') + curTournantIdx.toString());
-            }
-            t2.appendTournant(b.visible_centre.x, b.visible_centre.y);
-            // fill the board again
-            var path = b.fill();
-            for (i = 0; i < path.length; i++) {
-                t.appendTournant(path[i].x, path[i].y);
-            }
-            return true;
-        }
-        // add control buttons. stay on the top
-        for (var i = 0; i < 4; i++)
-            this.addChild(lboost.control_button(i, dostep), 100);
+        }, this);
     }
 });
