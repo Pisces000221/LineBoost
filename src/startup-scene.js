@@ -19,7 +19,7 @@ var StartupScene = cc.Scene.extend({
         var size = cc.director.getWinSize();
 
         // the score display (always on the top)
-        var scoreLabel = cc.LabelTTF.create('0', '', 48);
+        var scoreLabel = cc.LabelTTF.create('00', '', 48);
         scoreLabel.setPosition(size.width / 2, size.height * 0.9);
         scoreLabel.setColor(cc.color(64, 255, 64));
         this.addChild(scoreLabel, 100);
@@ -47,7 +47,13 @@ var StartupScene = cc.Scene.extend({
         var curTournantIdx = 0; // index of the player's current tournant. it's also the score
         var turn = [[3, 0, 0, 2], [2, 1, 1, 3], [0, 2, 2, 1], [1, 3, 3, 0]];
         var rotation = [270, 90, 0, 180];
-        var cur_direction = 2;  // start facing up
+        var cur_direction;
+        for (var i = 0; i < 4; i++)
+            if (cc.pFuzzyEqual(lboost.board.move[i], path[0], 0)) {
+                cur_direction = i;
+                break;
+            }
+        arrow.setRotation(rotation[cur_direction]);
         // behaviour when tapped on the control buttons
         var dostep = function(idx) {
             // turn according to the button tapped.
@@ -65,7 +71,8 @@ var StartupScene = cc.Scene.extend({
                 t2.themeColour = cc.color(255, 64, 64);
                 arrow.setColor(cc.color(128, 128, 128));
             } else {
-                scoreLabel.setString(curTournantIdx.toString());
+                // update score display
+                scoreLabel.setString((curTournantIdx < 10 ? '0' : '') + curTournantIdx.toString());
             }
             t2.appendTournant(b.visible_centre.x, b.visible_centre.y);
             // fill the board again
