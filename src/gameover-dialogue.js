@@ -18,6 +18,10 @@ lboost.GameOverDialogue = cc.LayerColor.extend({
             '游戏结束！你在 ' + this.time.toFixed(2) + ' 秒内通过了 ' + this.score + ' 个点！'
             + '\n \n速度为 ' + (this.score / this.time).toFixed(2) + ' 个点/秒',
             '', 32, cc.size(size.width, 0));
+        lboost.share_msg = lbl2.getString();
+        lboost.share_data.time = this.time.toFixed(2);
+        lboost.share_data.time = this.score;
+        lboost.share_data.total_games++;
         lbl2.setAnchorPoint(cc.p(0.5, 1));
         lbl2.setPosition(size.width / 2, size.height * 0.85);
         this.addChild(lbl2);

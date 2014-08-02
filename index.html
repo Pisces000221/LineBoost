@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset='utf-8'>
-    <title>Hello Cocos2d-JS</title> 
+    <title>Line Boost</title> 
     <script type='text/javascript'> var lboost = {}; </script>
     <script type='text/javascript'>
         // generate a random integer in range [low, high]
@@ -16,13 +16,15 @@
     <script type='text/javascript' src='src/startup-scene.js'></script>
     <script type='text/javascript' src='src/game-scene.js'></script>
     <script type='text/javascript' src='src/gameover-dialogue.js'></script>
+    <script type='text/javascript' src='src/libs/WeixinApi.js'></script>
+    <script type='text/javascript' src='src/share.js'></script>
 </head>
 <body>
     <canvas id='game_canvas'></canvas>
     <script type='text/javascript'>
         window.onload = function() {
             cc.game.onStart = function() {
-                cc.Director._getInstance().setDisplayStats(true);
+                cc.Director._getInstance().setDisplayStats(false);
                 cc.view.adjustViewPort(true);
                 if (cc.sys.isMobile) {
                     cc.view.setDesignResolutionSize(320, 480, cc.ResolutionPolicy.FIXED_WIDTH);
