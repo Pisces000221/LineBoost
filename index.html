@@ -33,7 +33,7 @@
                 }
                 cc.view.resizeWithBrowserSize(true);
                 // load resources
-                cc.LoaderScene.preload([], function () {
+                cc.LoaderScene.preload(['res/turn.png', 'res/straight.png', 'res/arrow.png'], function () {
                     cc.director.runScene(new lboost.StartupScene());
                 }, this);
             };

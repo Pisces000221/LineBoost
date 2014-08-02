@@ -41,6 +41,7 @@ lboost.GameScene = cc.Scene.extend({
         timeLabel.setPosition(size.width / 2, size.height * 0.8);
         timeLabel.setColor(cc.color(64, 255, 64));
         this.addChild(timeLabel, 100);
+        // this will be scheduled later (after the player starts moving)
         var updateTime = function(dt) {
             timeRemaining -= dt;
             timeLabel.setString(timeRemaining.toFixed(1).toString() + ' s');
@@ -49,7 +50,6 @@ lboost.GameScene = cc.Scene.extend({
                 this.endGame('Time up!!');
             }
         }
-        this.schedule(updateTime, 0.1);
 
         // create the white track
         var t = lboost.Track.create();
@@ -83,6 +83,8 @@ lboost.GameScene = cc.Scene.extend({
         arrow.setRotation(rotation[cur_direction]);
         // behaviour when tapped on the control buttons
         var dostep = function(idx) {
+            // turn on scheduler if this is the first step
+            if (curTournantIdx == 0) __parent.schedule(updateTime, 0.1);
             // turn according to the button tapped.
             // if idx is 1 or 2 (tapped 'go straight ahead'), cur_direction will not change.
             cur_direction = turn[cur_direction][idx];
