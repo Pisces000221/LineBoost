@@ -4,9 +4,14 @@ lboost.control_button = function(idx, callback) {
         function() { callback(idx); });
     item.setAnchorPoint(cc.p(0, 0));
     item.setPosition(cc.p(80 * idx, 0));
+    item.setOpacity(0);
+    // the image of MenuItemImage is sometimes not smooth on the phone
+    // so we use a sprite instead to display the image.
+    var sprite = cc.Sprite.create(images[idx]);
+    sprite.setAnchorPoint(cc.p(0, 0));
+    item.addChild(sprite);
     if (idx >= 2) {
-        item.getNormalImage().setFlippedX(true);
-        item.getSelectedImage().setFlippedX(true);
+        sprite.setFlippedX(true);
     }
     var menu = cc.Menu.create(item);
     menu.setPosition(cc.p(0, 0));
@@ -37,7 +42,7 @@ lboost.GameScene = cc.Scene.extend({
         this.addChild(scoreLabel, 100);
         // the time display
         var timeRemaining = lboost.gameTime;
-        var timeLabel = cc.LabelTTF.create(timeRemaining + ' s', '', 36);
+        var timeLabel = cc.LabelTTF.create(timeRemaining + '.0 s', '', 36);
         timeLabel.setPosition(size.width / 2, size.height * 0.8);
         timeLabel.setColor(cc.color(64, 255, 64));
         this.addChild(timeLabel, 100);
@@ -58,7 +63,7 @@ lboost.GameScene = cc.Scene.extend({
         this.addChild(t);
         // t2 is the blue track, used to display the player's moves
         var t2 = lboost.Track.create();
-        t2.themeColour = cc.color(96, 96, 255);
+        t2.themeColour = cc.color(0, 128, 255);
         t2.appendTournant(0, 0);
         t.addChild(t2);
         var b = lboost.board.create();

@@ -21,7 +21,7 @@ lboost.StartupScene = cc.Scene.extend({
             })
         ));
         // the version display
-        var verLabel = cc.LabelTTF.create('Version 11', '', 28);
+        var verLabel = cc.LabelTTF.create('Version 12', '', 28);
         verLabel.setAnchorPoint(cc.p(0, 0));
         verLabel.setPosition(cc.p(0, 0));
         this.addChild(verLabel);
