@@ -20,6 +20,11 @@ lboost.StartupScene = cc.Scene.extend({
                 cc.FadeTo.create(1.2, 192), cc.FadeTo.create(1.2, 255))));
             })
         ));
+        // the version display
+        var verLabel = cc.LabelTTF.create('Version 10', '', 28);
+        verLabel.setAnchorPoint(cc.p(0, 0));
+        verLabel.setPosition(cc.p(0, 0));
+        this.addChild(verLabel);
 
         cc.eventManager.addListener({
             event: cc.EventListener.TOUCH_ONE_BY_ONE,

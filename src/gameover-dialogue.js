@@ -18,7 +18,8 @@ lboost.GameOverDialogue = cc.LayerColor.extend({
             '游戏结束！你在 ' + this.time.toFixed(2) + ' 秒内通过了 ' + this.score + ' 个点！'
             + '\n \n速度为 ' + (this.score / this.time).toFixed(2) + ' 个点/秒',
             '', 32, cc.size(size.width, 0));
-        lboost.share_msg = lbl2.getString();
+        lboost.share_msg = '我在Line Boost中用' + this.time.toFixed(2) + '秒通过了' + this.score + '个点，'
+            + '速度为' + (this.score / this.time).toFixed(2) + '个点/秒！你也来试试？';
         lboost.share_data.time = this.time.toFixed(2);
         lboost.share_data.time = this.score;
         lboost.share_data.total_games++;
@@ -26,21 +27,13 @@ lboost.GameOverDialogue = cc.LayerColor.extend({
         lbl2.setPosition(size.width / 2, size.height * 0.85);
         this.addChild(lbl2);
 
-        // the 'share' & 'retry' menu
-        var shareItem = cc.MenuItemLabel.create(
-            cc.LabelTTF.create('分享成绩到朋友圈', '', 32), function() {
-                console.log('TODO: share');
-                // http://www.cnblogs.com/imhurley/archive/2012/03/14/2395720.html
-                document.title = '我在Line Boost中用' + this.time.toFixed(2) + '秒通过了' + this.score + '个点，'
-                    + '速度为' + (this.score / this.time).toFixed(2) + '个点/秒！你也来试试？'
-            }, this);
-        shareItem.setPosition(size.width / 2, size.height * 0.3);
+        // the 'retry' menu
         var retryItem = cc.MenuItemLabel.create(
             cc.LabelTTF.create('再来一次', '', 32), function() {
                 cc.director.runScene(cc.TransitionFade.create(1, new lboost.GameScene(), cc.color(0, 0, 0)));
             }, this);
-        retryItem.setPosition(size.width / 2, size.height * 0.2);
-        var menu = cc.Menu.create(shareItem, retryItem);
+        retryItem.setPosition(size.width / 2, size.height * 0.25);
+        var menu = cc.Menu.create(retryItem);
         menu.setPosition(cc.p(0, 0));
         this.addChild(menu);
     }
