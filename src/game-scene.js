@@ -4,14 +4,12 @@ lboost.control_button = function(idx, callback) {
         function() { callback(idx); });
     item.setAnchorPoint(cc.p(0, 0));
     item.setPosition(cc.p(80 * idx, 0));
-    item.setOpacity(0);
-    // the image of MenuItemImage is sometimes not smooth on the phone
-    // so we use a sprite instead to display the image.
-    var sprite = cc.Sprite.create(images[idx]);
-    sprite.setAnchorPoint(cc.p(0, 0));
-    item.addChild(sprite);
     if (idx >= 2) {
-        sprite.setFlippedX(true);
+        // http://blog.csdn.net/zhy_cheng/article/details/8481366
+        item.getNormalImage().setFlippedX(true);
+        item.getNormalImage().setAntiAliasTexParameters();
+        item.getSelectedImage().setFlippedX(true);
+        item.getSelectedImage().setAntiAliasTexParameters();
     }
     var menu = cc.Menu.create(item);
     menu.setPosition(cc.p(0, 0));
@@ -42,14 +40,14 @@ lboost.GameScene = cc.Scene.extend({
         this.addChild(scoreLabel, 100);
         // the time display
         var timeRemaining = lboost.gameTime;
-        var timeLabel = cc.LabelTTF.create(timeRemaining + '.0 s', '', 36);
+        var timeLabel = cc.LabelTTF.create(timeRemaining + ' s', '', 36);
         timeLabel.setPosition(size.width / 2, size.height * 0.8);
         timeLabel.setColor(cc.color(64, 255, 64));
         this.addChild(timeLabel, 100);
         // this will be scheduled later (after the player starts moving)
         var updateTime = function(dt) {
             timeRemaining -= dt;
-            timeLabel.setString(timeRemaining.toFixed(1).toString() + ' s');
+            timeLabel.setString(timeRemaining.toFixed(1).toString() + '.0 s');
             if (timeRemaining < 0) {
                 timeRemaining = 0;  // prevent things like 20.02s in game over dialogue
                 this.endGame('Time up!!');
