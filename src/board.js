@@ -1,59 +1,50 @@
 lboost.board = {
     direction: { LEFT: 0, RIGHT: 1, UP: 2, DOWN: 3 },
-    valid_nextstep: [[2, 3], [2, 3], [0, 1], [0, 1]],
-    move: [cc.p(-1, 0), cc.p(1, 0), cc.p(0, 1), cc.p(0, -1),
-        cc.p(1, 1), cc.p(1, -1), cc.p(-1, 1), cc.p(-1, -1)],
+    turn_direction: [[2, 3], [2, 3], [0, 1], [0, 1]],
+    move: [cc.p(-1, 0), cc.p(1, 0), cc.p(0, 1), cc.p(0, -1)],
     turn_possib: 0.25,
-    create: function() {
-        var board = {};
-        board.has_tournant = new Array();
-        board.visible_range = cc.p(1.6, 2.4);
-        board.visible_centre = cc.p(0, 0);
-        board.last_pos = board.visible_centre;
-        board.cur_direction = lboost.board.direction.UP;
-        board.is_visible = function(p) {
-            return Math.abs(p.x - this.visible_centre.x) <= this.visible_range.x
-              && Math.abs(p.y - this.visible_centre.y) <= this.visible_range.y;
+    visible_range: cc.p(1.6, 2.4),
+    max_visible_points: 15, // (floor(1.6) * 2 + 1) * (floor(2.4) * 2 + 1)
+    generate: function(num, startpos, vcentre, direction) {
+        var is_visible = function(p) {
+            return Math.abs(p.x - vcentre.x) <= lboost.board.visible_range.x
+              && Math.abs(p.y - vcentre.y) <= lboost.board.visible_range.y;
         }
-        board.almost_visible = function(p) {
-            return Math.abs(p.x - this.visible_centre.x) <= this.visible_range.x + 1
-              && Math.abs(p.y - this.visible_centre.y) <= this.visible_range.y + 1;
-        }
-        // call this to fill the part of the board which is visible
-        // suggested to call after every step
-        // pass anything to force if you want to fill the board anyway, will not consider the visible range
-        // e.g. call board.fill(true) at the beginning of the game
-        board.fill = function(force) {
-            var path = new Array();
-            var curpos = this.last_pos;
-            while (this.almost_visible(curpos)) {
-                var nextpos, direction;
-                var ct = 0;
-                do {
-                    if (++ct > 100) {
-                        console.log('ouch!');
-                        force = true;
-                    }
-                    nextpos = curpos;
-                    var n = Math.random();
-                    if (n < lboost.board.turn_possib) {
-                        // turn away
-                        direction = lboost.board.valid_nextstep[this.cur_direction][lboost.random(0, 1)];
-                    } else {
-                        direction = this.cur_direction;
-                    }
-                    // go one step ahead
-                    nextpos = cc.pAdd(nextpos, lboost.board.move[direction]);
-                } while (!force && (this.is_visible(nextpos) || this.has_tournant[nextpos.x] && this.has_tournant[nextpos.x][nextpos.y]));
-                this.cur_direction = direction;
-                curpos = nextpos;
-                path.push(curpos);
-                if (board.has_tournant[curpos.x] == null) board.has_tournant[curpos.x] = new Array();
-                board.has_tournant[curpos.x][curpos.y] = true;
+        var used = [];
+        var path = [];
+        var ___ = function(num, p, direction) {
+            if (num == 0) {
+                // we did it!
+                return true;
+            } else if (is_visible(p) || used[p.x] && used[p.x][p.y]) {
+                // oh no! that's invalid.
+                return false;
             }
-            board.last_pos = curpos;
-            return path;
+            var n = Math.random();
+            var c1, c2, c3;
+            if (n < lboost.board.turn_possib) {
+                // turn away
+                var a = lboost.random(0, 1);
+                c1 = lboost.board.turn_direction[direction][a];
+                c2 = lboost.board.turn_direction[direction][1 - a];
+                c3 = direction;
+            } else {
+                var a = lboost.random(0, 1);
+                c1 = direction;
+                c2 = lboost.board.turn_direction[direction][a];
+                c3 = lboost.board.turn_direction[direction][1 - a];
+            }
+            // go one step ahead
+            path.push(p);
+            if (used[p.x] == null) used[p.x] = new Array();
+            used[p.x][p.y] = true;
+            if (___(num - 1, cc.pAdd(p, lboost.board.move[c1]), c1)
+                || ___(num - 1, cc.pAdd(p, lboost.board.move[c2]), c2)
+                || ___(num - 1, cc.pAdd(p, lboost.board.move[c3]), c3)) return true;
+            path.pop();
+            return false;
         };
-        return board;
+        ___(num, startpos, direction);
+        return path;
     }
 };

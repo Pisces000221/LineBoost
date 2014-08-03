@@ -1,3 +1,13 @@
+cc.pEqual = function(v1, v2) {
+    return v1.x == v2.x && v1.y == v2.y;
+};
+
+lboost.direction_towards = function(v1, v2) {
+    // find out in which direction the second point goes
+    for (var i = 0; i < 4; i++)
+        if (cc.pEqual(lboost.board.move[i], cc.pSub(v2, v1))) return i;
+};
+
 lboost.control_button_images = new Array('res/turn.png', 'res/straight.png', 'res/straight.png', 'res/turn.png');
 lboost.control_button = function(idx, callback) {
     var item = cc.MenuItemImage.create(
@@ -20,6 +30,7 @@ lboost.control_button_sprite = function(idx) {
 };
 
 lboost.gameTime = 20;
+lboost.pointsPerGeneration = 30;
 lboost.GameScene = cc.Scene.extend({
     onEnter: function () {
         this._super();
@@ -67,11 +78,22 @@ lboost.GameScene = cc.Scene.extend({
         t2.themeColour = cc.color(0, 128, 255);
         t2.appendTournant(0, 0);
         t.addChild(t2);
-        var b = lboost.board.create();
-        var path = b.fill(true);
-        for (i = 0; i < path.length; i++) {
-            t.appendTournant(path[i].x, path[i].y);
-        }
+        var cur_direction = lboost.board.direction.UP;
+        var visible_centre = cc.p(-200, 0);
+        var path = [cc.p(0, 0)];
+        // generate 30 points.
+        var continue_path_generating = function() {
+            var p2 = lboost.board.generate(lboost.pointsPerGeneration,
+                path[path.length - 1], visible_centre, cur_direction);
+            p2.shift();
+            for (i = 0; i < p2.length; i++) {
+                t.appendTournant(p2[i].x, p2[i].y);
+                path.push(p2[i]);
+            }
+        };
+        continue_path_generating();
+        cur_direction = lboost.direction_towards(path[0], path[1]);
+        visible_centre = cc.p(0, 0);
         // create the arrow
         var arrow = cc.Sprite.create('res/arrow.png');
         arrow.setAnchorPoint(cc.p(0.5, 0));
@@ -80,12 +102,6 @@ lboost.GameScene = cc.Scene.extend({
         var curTournantIdx = 0; // index of the player's current tournant. it's also the score
         var turn = [[3, 0, 0, 2], [2, 1, 1, 3], [0, 2, 2, 1], [1, 3, 3, 0]];
         var rotation = [270, 90, 0, 180];
-        var cur_direction;
-        for (var i = 0; i < 4; i++)
-            if (cc.pFuzzyEqual(lboost.board.move[i], path[0], 0)) {
-                cur_direction = i;
-                break;
-            }
         arrow.setRotation(rotation[cur_direction]);
         // behaviour when tapped on the control buttons
         var dostep = function(idx) {
@@ -96,12 +112,12 @@ lboost.GameScene = cc.Scene.extend({
             cur_direction = turn[cur_direction][idx];
             arrow.setRotation(rotation[cur_direction]);
             // move
-            b.visible_centre = cc.pAdd(b.visible_centre, lboost.board.move[cur_direction]);
-            arrow.setPosition(lboost.dataPosToGLPos(b.visible_centre));
+            visible_centre = cc.pAdd(visible_centre, lboost.board.move[cur_direction]);
+            arrow.setPosition(lboost.dataPosToGLPos(visible_centre));
             t.runAction(cc.EaseSineOut.create(cc.MoveTo.create(
-                0.15, cc.pSub(cc.p(size.width / 2, size.height / 2), lboost.dataPosToGLPos(b.visible_centre)))));
+                0.15, cc.pSub(cc.p(size.width / 2, size.height / 2), lboost.dataPosToGLPos(visible_centre)))));
             // lose?
-            if (!cc.pFuzzyEqual(b.visible_centre, t.tournants[++curTournantIdx], 0)) {
+            if (!cc.pEqual(visible_centre, t.tournants[++curTournantIdx])) {
                 // ouch!!
                 t2.themeColour = cc.color(255, 64, 64);
                 arrow.setColor(cc.color(128, 128, 128));
@@ -112,11 +128,10 @@ lboost.GameScene = cc.Scene.extend({
                 // update score display
                 scoreLabel.setString((curTournantIdx < 10 ? '0' : '') + curTournantIdx.toString());
             }
-            t2.appendTournant(b.visible_centre.x, b.visible_centre.y);
-            // fill the board again
-            var path = b.fill();
-            for (i = 0; i < path.length; i++) {
-                t.appendTournant(path[i].x, path[i].y);
+            t2.appendTournant(visible_centre.x, visible_centre.y);
+            if (curTournantIdx % lboost.pointsPerGeneration
+              == lboost.pointsPerGeneration - lboost.board.max_visible_points) {
+                continue_path_generating();
             }
             return true;
         }
