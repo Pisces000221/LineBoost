@@ -14,7 +14,7 @@ WeixinApi.ready(function(Api) {
     // 微信分享的数据
     var wxData = {
         'appId': '',
-        'imgUrl' : '',
+        'imgUrl' : window.location.href + 'res/icon.png',
         'link' : window.location.href,
         'desc' : '',
         'title' : 'Line Boost'
