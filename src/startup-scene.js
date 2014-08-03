@@ -21,7 +21,7 @@ lboost.StartupScene = cc.Scene.extend({
             })
         ));
         // the version display
-        var verLabel = cc.LabelTTF.create('Rev 17', '', 28);
+        var verLabel = cc.LabelTTF.create('Rev 18', '', 28);
         verLabel.setAnchorPoint(cc.p(0, 0));
         verLabel.setPosition(cc.p(0, 0));
         this.addChild(verLabel);
@@ -29,7 +29,7 @@ lboost.StartupScene = cc.Scene.extend({
         cc.eventManager.addListener({
             event: cc.EventListener.TOUCH_ONE_BY_ONE,
             onTouchBegan: function(touch, event) {
-                cc.director.runScene(cc.TransitionFade.create(1, new lboost.GameScene(), cc.color(0, 0, 0)));
+                cc.director.runScene(cc.TransitionFade.create(1, new lboost.TutorialScene(), cc.color(0, 0, 0)));
                 return true;
             }
         }, this);

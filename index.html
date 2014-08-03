@@ -14,6 +14,7 @@
     <script type='text/javascript' src='src/board.js'></script>
     <script type='text/javascript' src='src/track.js'></script>
     <script type='text/javascript' src='src/startup-scene.js'></script>
+    <script type='text/javascript' src='src/tutorial-scene.js'></script>
     <script type='text/javascript' src='src/game-scene.js'></script>
     <script type='text/javascript' src='src/gameover-dialogue.js'></script>
     <script type='text/javascript' src='src/libs/WeixinApi.js'></script>
@@ -33,7 +34,7 @@
                 }
                 cc.view.resizeWithBrowserSize(true);
                 // load resources
-                cc.LoaderScene.preload(['res/turn.png', 'res/straight.png', 'res/arrow.png'], function () {
+                cc.LoaderScene.preload(['res/turn.png', 'res/straight.png', 'res/arrow.png', 'res/tutorial.png'], function () {
                     cc.director.runScene(new lboost.StartupScene());
                 }, this);
             };
