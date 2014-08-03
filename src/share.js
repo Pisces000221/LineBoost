@@ -2,6 +2,13 @@ lboost.share_msg = '我正在玩 Line Boost，根本停不下来！';   // put t
 lboost.share_data = {}; // put the data that are used to upload record
 lboost.share_data.total_games = 0;
 
+lboost.call_php = function(php) {
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = php;
+    document.body.appendChild(script);
+};
+
 WeixinApi.ready(function(Api) {
 
     // 微信分享的数据
@@ -27,11 +34,8 @@ WeixinApi.ready(function(Api) {
             // http://zhidao.baidu.com/link?url=kJD--Uae8dgzfHvUu-uaXodhPFdyJC3ttssX69qpWMGuHN98QQ7FO9YresAC9dEb4xPKAdKZb_aAvugSp6pl3weJm7OiT45HuD8WevE-cpC
             // http://www.cnblogs.com/penny/archive/2008/09/01/1281293.html
             // TODO: upload your own stat/analytics here
-            var script = document.createElement('script');
-            script.type = 'text/javascript';
-            script.src = 'php/share_stat.php?time=' + lboost.share_data.time
-                + '&score=' + lboost.share_data.score + '&total_games=' + lboost.share_data.total_games;
-            document.body.appendChild(script);
+            lboost.call_php('php/share_stat.php?time=' + lboost.share_data.time
+                + '&score=' + lboost.share_data.score + '&total_games=' + lboost.share_data.total_games);
         },
         all : function(resp) {
         }

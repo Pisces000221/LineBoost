@@ -21,11 +21,15 @@ lboost.GameOverDialogue = cc.LayerColor.extend({
         lboost.share_msg = '我在Line Boost中用' + this.time.toFixed(2) + '秒通过了' + this.score + '个点，'
             + '速度为' + (this.score / this.time).toFixed(2) + '个点/秒！你也来试试？';
         lboost.share_data.time = this.time.toFixed(2);
-        lboost.share_data.time = this.score;
+        lboost.share_data.score = this.score;
         lboost.share_data.total_games++;
         lbl2.setAnchorPoint(cc.p(0.5, 1));
         lbl2.setPosition(size.width / 2, size.height * 0.85);
         this.addChild(lbl2);
+
+        // count it!
+        lboost.call_php('php/score_stat.php?time=' + lboost.share_data.time
+                + '&score=' + lboost.share_data.score + '&total_games=' + lboost.share_data.total_games);
 
         // the 'retry' menu
         var retryItem = cc.MenuItemLabel.create(
