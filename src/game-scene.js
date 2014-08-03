@@ -1,19 +1,22 @@
+lboost.control_button_images = new Array('res/turn.png', 'res/straight.png', 'res/straight.png', 'res/turn.png');
 lboost.control_button = function(idx, callback) {
-    var images = new Array('res/turn.png', 'res/straight.png', 'res/straight.png', 'res/turn.png');
-    var item = cc.MenuItemImage.create(images[idx], images[idx],
+    var item = cc.MenuItemImage.create(
+        lboost.control_button_images[idx], lboost.control_button_images[idx],
         function() { callback(idx); });
     item.setAnchorPoint(cc.p(0, 0));
     item.setPosition(cc.p(80 * idx, 0));
-    if (idx >= 2) {
-        // http://blog.csdn.net/zhy_cheng/article/details/8481366
-        item.getNormalImage().setFlippedX(true);
-        item.getNormalImage().setAntiAliasTexParameters();
-        item.getSelectedImage().setFlippedX(true);
-        item.getSelectedImage().setAntiAliasTexParameters();
-    }
+    item.setOpacity(0); // for improving image quality. see CONFUSION 1
     var menu = cc.Menu.create(item);
     menu.setPosition(cc.p(0, 0));
     return menu;
+};
+// see CONFUSION 1
+lboost.control_button_sprite = function(idx) {
+    var sprite = cc.Sprite.create(lboost.control_button_images[idx]);
+    sprite.setAnchorPoint(cc.p(0, 0));
+    sprite.setPosition(cc.p(80 * idx, 0));
+    sprite.setFlippedX(idx >= 2);
+    return sprite;
 };
 
 lboost.gameTime = 20;
@@ -40,14 +43,14 @@ lboost.GameScene = cc.Scene.extend({
         this.addChild(scoreLabel, 100);
         // the time display
         var timeRemaining = lboost.gameTime;
-        var timeLabel = cc.LabelTTF.create(timeRemaining + ' s', '', 36);
+        var timeLabel = cc.LabelTTF.create(timeRemaining.toFixed(1).toString() + ' s', '', 36);
         timeLabel.setPosition(size.width / 2, size.height * 0.8);
         timeLabel.setColor(cc.color(64, 255, 64));
         this.addChild(timeLabel, 100);
         // this will be scheduled later (after the player starts moving)
         var updateTime = function(dt) {
             timeRemaining -= dt;
-            timeLabel.setString(timeRemaining.toFixed(1).toString() + '.0 s');
+            timeLabel.setString(timeRemaining.toFixed(1).toString() + ' s');
             if (timeRemaining < 0) {
                 timeRemaining = 0;  // prevent things like 20.02s in game over dialogue
                 this.endGame('Time up!!');
@@ -120,7 +123,12 @@ lboost.GameScene = cc.Scene.extend({
 
         // add control buttons. stay on the top
         // tags are 10881~10884
-        for (var i = 0; i < 4; i++)
+        for (var i = 0; i < 4; i++) {
             this.addChild(lboost.control_button(i, dostep), 100, 10880 + i);
+            //  *** CONFUSION 1 ***
+            // the image quality of MenuItemImage/MenuItemSprite is not good on phones sometimes
+            // so we use a sprite instead to display the images, and set menu items to transparent.
+            this.addChild(lboost.control_button_sprite(i), 101);
+        }
     }
 });

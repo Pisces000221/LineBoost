@@ -1,4 +1,4 @@
-lboost.share_msg = '';  // put the text to share here
+lboost.share_msg = '我正在玩 Line Boost，根本停不下来！';   // put the text to share here
 lboost.share_data = {}; // put the data that are used to upload record
 lboost.share_data.total_games = 0;
 
@@ -9,7 +9,7 @@ WeixinApi.ready(function(Api) {
         'appId': '',
         'imgUrl' : '',
         'link' : window.location.href,
-        'desc' : '我正在玩 Line Boost，根本停不下来！',
+        'desc' : '',
         'title' : 'Line Boost'
     };
 
