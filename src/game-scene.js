@@ -80,11 +80,14 @@ lboost.GameScene = cc.Scene.extend({
         t.addChild(t2);
         var cur_direction = lboost.board.direction.UP;
         var visible_centre = cc.p(-200, 0);
-        var path = [cc.p(0, 0)];
+        var path = [cc.p(-1, 0), cc.p(0, 0)];
+        // reset board class
+        lboost.board.used = [];
         // generate 30 points.
         var continue_path_generating = function() {
             var p2 = lboost.board.generate(lboost.pointsPerGeneration,
-                path[path.length - 1], visible_centre, cur_direction);
+                path[path.length - 1], visible_centre,
+                lboost.direction_towards(path[path.length - 2], path[path.length - 1]));
             p2.shift();
             for (i = 0; i < p2.length; i++) {
                 t.appendTournant(p2[i].x, p2[i].y);
@@ -92,6 +95,7 @@ lboost.GameScene = cc.Scene.extend({
             }
         };
         continue_path_generating();
+        path.shift();
         cur_direction = lboost.direction_towards(path[0], path[1]);
         visible_centre = cc.p(0, 0);
         // create the arrow

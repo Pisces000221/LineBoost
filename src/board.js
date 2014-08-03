@@ -5,19 +5,27 @@ lboost.board = {
     turn_possib: 0.25,
     visible_range: cc.p(1.6, 2.4),
     max_visible_points: 15, // (floor(1.6) * 2 + 1) * (floor(2.4) * 2 + 1)
+    used: [],
     generate: function(num, startpos, vcentre, direction) {
         var is_visible = function(p) {
             return Math.abs(p.x - vcentre.x) <= lboost.board.visible_range.x
               && Math.abs(p.y - vcentre.y) <= lboost.board.visible_range.y;
         }
-        var used = [];
         var path = [];
+        var invalid_pos = [];
+        if (lboost.board.used[startpos.x]) {
+            lboost.board.used[startpos.x][startpos.y] = false;
+        }
         var ___ = function(num, p, direction) {
             if (num == 0) {
                 // we did it!
                 return true;
-            } else if (is_visible(p) || used[p.x] && used[p.x][p.y]) {
+            } else if (is_visible(p) || lboost.board.used[p.x] && lboost.board.used[p.x][p.y]) {
                 // oh no! that's invalid.
+                // we need to record invalid positions to prevent sticking
+                if (lboost.board.used[p.x] && lboost.board.used[p.x][p.y]) {
+                    invalid_pos.push(p);
+                }
                 return false;
             }
             var n = Math.random();
@@ -36,15 +44,21 @@ lboost.board = {
             }
             // go one step ahead
             path.push(p);
-            if (used[p.x] == null) used[p.x] = new Array();
-            used[p.x][p.y] = true;
+            if (lboost.board.used[p.x] == null) lboost.board.used[p.x] = new Array();
+            lboost.board.used[p.x][p.y] = true;
             if (___(num - 1, cc.pAdd(p, lboost.board.move[c1]), c1)
                 || ___(num - 1, cc.pAdd(p, lboost.board.move[c2]), c2)
                 || ___(num - 1, cc.pAdd(p, lboost.board.move[c3]), c3)) return true;
             path.pop();
             return false;
         };
-        ___(num, startpos, direction);
+        // prevent generation fail
+        while (!___(num, startpos, direction)) {
+            // uh oh... failed to generate.
+            // we have no choice but to place one point on an existing point.
+            var p = invalid_pos[lboost.random(0, invalid_pos.length - 1)];
+            lboost.board.used[p.x][p.y] = false;
+        }
         return path;
     }
 };
