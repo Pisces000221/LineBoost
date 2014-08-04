@@ -2,37 +2,11 @@
 <html>
 <head>
     <meta charset='utf-8'>
-    <title>Line Boost</title> 
-    <script type='text/javascript'> var lboost = {}; </script>
-    <script type='text/javascript'>
-        // generate a random integer in range [low, high]
-        lboost.random = function(low, high) {
-            return Math.floor(Math.random() * (high - low + 1) + low);
-        }
-    </script>
+    <title>Line Boost</title>
     <script type='text/javascript' src='cocos2d-html5.min.js'></script>
     <script type='text/javascript' src='game.min.js'></script>
 </head>
 <body>
     <canvas id='game_canvas'></canvas>
-    <script type='text/javascript'>
-        window.onload = function() {
-            cc.game.onStart = function() {
-                cc.Director._getInstance().setDisplayStats(false);
-                cc.view.adjustViewPort(true);
-                if (cc.sys.isMobile) {
-                    cc.view.setDesignResolutionSize(320, 480, cc.ResolutionPolicy.FIXED_WIDTH);
-                } else {
-                    cc.view.setDesignResolutionSize(320, 480, cc.ResolutionPolicy.SHOW_ALL);
-                }
-                cc.view.resizeWithBrowserSize(true);
-                // load resources
-                cc.LoaderScene.preload(['res/turn.png', 'res/straight.png', 'res/arrow.png', 'res/tutorial.png'], function () {
-                    cc.director.runScene(new lboost.StartupScene());
-                }, this);
-            };
-            cc.game.run('game_canvas');
-        };
-    </script>
 </body>
 </html>
