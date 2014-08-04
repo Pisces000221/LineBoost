@@ -12,21 +12,18 @@ lboost.board = {
               && Math.abs(p.y - vcentre.y) <= lboost.board.visible_range.y;
         }
         var path = [];
-        var invalid_pos = [];
         if (lboost.board.used[startpos.x]) {
             lboost.board.used[startpos.x][startpos.y] = false;
         }
+        var force = 0, maxforce = 0;
         var ___ = function(num, p, direction) {
             if (num == 0) {
                 // we did it!
                 return true;
             } else if (is_visible(p) || lboost.board.used[p.x] && lboost.board.used[p.x][p.y]) {
                 // oh no! that's invalid.
-                // we need to record invalid positions to prevent sticking
-                if (lboost.board.used[p.x] && lboost.board.used[p.x][p.y]) {
-                    invalid_pos.push(p);
-                }
-                return false;
+                // force > 0 means we have no other choices..
+                if (force > 0) force--; else return false;
             }
             var n = Math.random();
             var c1, c2, c3;
@@ -52,12 +49,11 @@ lboost.board = {
             path.pop();
             return false;
         };
-        // prevent generation fail
+        // prevent generation failure
         while (!___(num, startpos, direction)) {
             // uh oh... failed to generate.
             // we have no choice but to place one point on an existing point.
-            var p = invalid_pos[lboost.random(0, invalid_pos.length - 1)];
-            lboost.board.used[p.x][p.y] = false;
+            maxforce++; force = maxforce;
         }
         return path;
     }

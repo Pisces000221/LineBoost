@@ -29,7 +29,7 @@ lboost.control_button_sprite = function(idx) {
     return sprite;
 };
 
-lboost.gameTime = 20;
+lboost.gameTime = 200;
 lboost.pointsPerGeneration = 30;
 lboost.GameScene = cc.Scene.extend({
     onEnter: function () {
