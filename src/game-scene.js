@@ -1,9 +1,14 @@
+var cc = cc || {};
+var lboost = lboost || {};
+
 cc.pEqual = function(v1, v2) {
-    return v1.x == v2.x && v1.y == v2.y;
+    'use strict';
+    return v1.x === v2.x && v1.y === v2.y;
 };
 
+// find out in which direction the second point goes
 lboost.direction_towards = function(v1, v2) {
-    // find out in which direction the second point goes
+    'use strict';
     for (var i = 0; i < 4; i++)
         if (cc.pEqual(lboost.board.move[i], cc.pSub(v2, v1))) return i;
 };
@@ -29,13 +34,13 @@ lboost.control_button_sprite = function(idx) {
     return sprite;
 };
 
-lboost.gameTime = 200;
-lboost.pointsPerGeneration = 30;
+lboost.gameTime = 20;
+lboost.pointsPerGeneration = 60;    // 60 is enough for a *human being*... I think...
 lboost.GameScene = cc.Scene.extend({
     onEnter: function () {
         this._super();
         var size = cc.director.getWinSize();
-        var __parent = this;
+        var jslinthappy__parent = this;
 
         // call to end the game
         this.endGame = function(title) {
@@ -110,7 +115,7 @@ lboost.GameScene = cc.Scene.extend({
         // behaviour when tapped on the control buttons
         var dostep = function(idx) {
             // turn on scheduler if this is the first step
-            if (curTournantIdx == 0) __parent.schedule(updateTime, 0.1);
+            if (curTournantIdx == 0) jslinthappy__parent.schedule(updateTime, 0.1);
             // turn according to the button tapped.
             // if idx is 1 or 2 (tapped 'go straight ahead'), cur_direction will not change.
             cur_direction = turn[cur_direction][idx];
@@ -127,7 +132,7 @@ lboost.GameScene = cc.Scene.extend({
                 arrow.setColor(cc.color(128, 128, 128));
                 // we don't count the last (wrong) one, so the score is curTournantIdx - 1
                 curTournantIdx--;
-                __parent.endGame('Ouch!!');
+                jslinthappy__parent.endGame('Ouch!!');
             } else {
                 // update score display
                 scoreLabel.setString((curTournantIdx < 10 ? '0' : '') + curTournantIdx.toString());

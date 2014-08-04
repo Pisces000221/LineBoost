@@ -1,8 +1,10 @@
+var cc = cc || {};
+var lboost = lboost || {};
+
 lboost.TutorialScene = cc.Scene.extend({
     onEnter: function () {
         this._super();
         var size = cc.director.getWinSize();
-        var __parent = this;
 
         // the title
         var titleLabel = cc.LabelTTF.create('How to play', '', 48);

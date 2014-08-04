@@ -1,10 +1,15 @@
+var cc = cc || {};
+var lboost = lboost || {};
+
 lboost.S_if_plural = function(n) {
+    'use strict';
     return n > 1 ? 's' : '';
-}
+};
 
 lboost.GameOverDialogue = cc.LayerColor.extend({
     title: '', time: 0, score: 0,
     onEnter: function() {
+        'use strict';
         this._super();
         this.setColor(cc.color(0, 0, 0, 192));
         var size = cc.director.getWinSize();
@@ -17,7 +22,10 @@ lboost.GameOverDialogue = cc.LayerColor.extend({
         var lbl2 = cc.LabelTTF.create(
             '游戏结束！你在 ' + this.time.toFixed(2) + ' 秒内通过了 ' + this.score + ' 个点！'
             + '\n \n速度为 ' + (this.score / this.time).toFixed(2) + ' 个点/秒',
-            '', 32, cc.size(size.width, 0));
+            '',
+            32,
+            cc.size(size.width, 0)
+        );
         lboost.share_msg = '我在Line Boost中用' + this.time.toFixed(2) + '秒通过了' + this.score + '个点，'
             + '速度为' + (this.score / this.time).toFixed(2) + '个点/秒！你也来试试？';
         lboost.share_data.time = this.time.toFixed(2);
@@ -35,7 +43,8 @@ lboost.GameOverDialogue = cc.LayerColor.extend({
         var retryItem = cc.MenuItemLabel.create(
             cc.LabelTTF.create('再来一次', '', 32), function() {
                 cc.director.runScene(cc.TransitionFade.create(1, new lboost.GameScene(), cc.color(0, 0, 0)));
-            }, this);
+            }, this
+        );
         retryItem.setPosition(size.width / 2, size.height * 0.25);
         var menu = cc.Menu.create(retryItem);
         menu.setPosition(cc.p(0, 0));
@@ -44,7 +53,8 @@ lboost.GameOverDialogue = cc.LayerColor.extend({
 });
 
 lboost.GameOverDialogue.create = function(title, time, score) {
-    var god = new lboost.GameOverDialogue();
-    god.time = time; god.score = score; god.title = title;
-    return god;
-}
+    'use strict';
+    var dialogue = new lboost.GameOverDialogue();
+    dialogue.time = time; dialogue.score = score; dialogue.title = title;
+    return dialogue;
+};

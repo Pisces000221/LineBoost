@@ -1,8 +1,11 @@
+var cc = cc || {};
+var lboost = lboost || {};
+
 lboost.StartupScene = cc.Scene.extend({
     onEnter: function () {
+        'use strict';
         this._super();
         var size = cc.director.getWinSize();
-        var __parent = this;
 
         // the title
         var titleLabel = cc.LabelTTF.create('Line Boost', '', 58);
@@ -17,7 +20,8 @@ lboost.StartupScene = cc.Scene.extend({
             cc.FadeIn.create(1.2 * 255 / 192),
             cc.CallFunc.create(function() {
                 descLabel.runAction(cc.RepeatForever.create(cc.Sequence.create(
-                cc.FadeTo.create(1.2, 192), cc.FadeTo.create(1.2, 255))));
+                    cc.FadeTo.create(1.2, 192), cc.FadeTo.create(1.2, 255)
+                )));
             })
         ));
         // the version display
