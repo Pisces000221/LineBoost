@@ -14,6 +14,11 @@ lboost.TutorialScene = cc.Scene.extend({
         var sprite = cc.Sprite.create('res/tutorial.png');
         sprite.setPosition(cc.p(size.width / 2, size.height / 2));
         this.addChild(sprite);
+        // the 'you' label
+        var you = cc.LabelTTF.create("You're here", '', 26);
+        you.setPosition(size.width * 0.3, size.height * 0.22);
+        you.setRotation(15);
+        this.addChild(you);
 
         cc.eventManager.addListener({
             event: cc.EventListener.TOUCH_ONE_BY_ONE,
