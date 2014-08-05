@@ -6,7 +6,9 @@ lboost.S_if_plural = function(n) {
     return n > 1 ? 's' : '';
 };
 
+lboost.come_on_share = ['好东西要和大家分享', '晒成绩', '成绩不错？戳这玩意！'];
 lboost.rank = [
+    [-1, '未完成游戏，无法评价 T^T', '坚持到底就能有评价了啊 (^ ^;)', '貌似没有到20秒 (-_-)zzz', '撑过20秒，这里会有好东东喔 :-P'],
     [0, '空气', '0%生物', '所有非生物'],
     [1, '乌龟', '蜗牛'],
     [1.5, '80%非人类动物', '0%的外星人'],
@@ -80,23 +82,39 @@ lboost.GameOverDialogue = cc.LayerColor.extend({
         lbl2_3.setPosition(size.width * 0.7, size.height * 0.39);
         lbl2_3.setVisible(false);
         this.addChild(lbl2_3);
-        var tot_time = 0;
+
+        // c'mon, share it!
+        var shareHintImg = cc.Sprite.create('res/share.png');
+        shareHintImg.setAnchorPoint(cc.p(1, 1));
+        shareHintImg.setPosition(size.width, size.height);
+        shareHintImg.setVisible(false);
+        this.addChild(shareHintImg);
+        var shareHintLabel = cc.LabelTTF.create(lboost.come_on_share[lboost.random(0, lboost.come_on_share.length - 1)], '', 16);
+        shareHintLabel.setAnchorPoint(cc.p(0.6, 1));
+        shareHintLabel.setPosition(0, 0);
+        shareHintLabel.setRotation(10);
+        shareHintImg.addChild(shareHintLabel);
+
+        // slowly show the result out
+        var tot_time = -1;  // delay 1 second before starting to display
         var show_result = function(dt) {
             tot_time += dt;
             if (tot_time > 2.4) {
                 this.unschedule(show_result);
+                shareHintImg.setVisible(true);
                 lbl2_3.setVisible(true);
                 if (this.rank == '') {
-                    lbl2.setString(lbl2.getString() + '\n未完成游戏，无法评价 T^T');
+                    // grab a random encouragement from lboost.rank[0]
+                    lbl2.setString(lbl2.getString() + '\n' + lboost.rank[0][lboost.random(1, lboost.rank[0].length - 1)]);
                 } else {
                     lbl2.setString(lbl2.getString() + '\n超过了' + this.rank);
                 }
             } else if (tot_time > 1) {
-                var t = Math.min(tot_time, 1.6) - 1;
+                var t = (Math.min(tot_time, 1.6) - 1) / 0.6;
                 lbl2_2.setVisible(true);
                 lbl2_2.setString((this.score * t).toFixed(0));
-            } else {
-                var t = Math.min(tot_time, 0.6);
+            } else if (tot_time > 0) {
+                var t = Math.min(tot_time, 0.6) / 0.6;
                 lbl2_1.setVisible(true);
                 lbl2_1.setString((this.time * t).toFixed(2) + ' s');
             }
