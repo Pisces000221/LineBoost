@@ -7,7 +7,7 @@ lboost.TutorialScene = cc.Scene.extend({
         var size = cc.director.getWinSize();
 
         // the title
-        var titleLabel = cc.LabelTTF.create('How to play', '', 48);
+        var titleLabel = cc.LabelTTF.create('玩法', '', 48);
         titleLabel.setPosition(size.width / 2, size.height * 0.85);
         this.addChild(titleLabel);
         // the image

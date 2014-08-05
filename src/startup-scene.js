@@ -11,7 +11,7 @@ lboost.StartupScene = cc.Scene.extend({
         var titleLabel = cc.LabelTTF.create('Line Boost', '', 58);
         titleLabel.setPosition(size.width / 2, size.height * 0.8);
         this.addChild(titleLabel);
-        var descLabel = cc.LabelTTF.create('Tap to start', '', 36);
+        var descLabel = cc.LabelTTF.create('猛戳开始', '', 36);
         descLabel.setPosition(size.width / 2, size.height * 0.4);
         descLabel.setOpacity(0);
         this.addChild(descLabel);
@@ -25,10 +25,16 @@ lboost.StartupScene = cc.Scene.extend({
             })
         ));
         // the version display
-        var verLabel = cc.LabelTTF.create('Rev 18', '', 28);
+        var verLabel = cc.LabelTTF.create('Rev 19', '', 28);
         verLabel.setAnchorPoint(cc.p(0, 0));
-        verLabel.setPosition(cc.p(0, 0));
+        verLabel.setPosition(cc.p(0, 20));
         this.addChild(verLabel);
+        // the acknowledgement
+        var engineLabel = cc.LabelTTF.create('强力外援: Cocos2d-x HTML5', '', 20);
+        engineLabel.setColor(cc.color(128, 128, 255));
+        engineLabel.setAnchorPoint(cc.p(0.5, 0));
+        engineLabel.setPosition(cc.p(size.width / 2, 0));
+        this.addChild(engineLabel);
 
         cc.eventManager.addListener({
             event: cc.EventListener.TOUCH_ONE_BY_ONE,
