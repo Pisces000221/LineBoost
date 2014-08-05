@@ -29,4 +29,5 @@ window.onload = function() {
         cc.director.runScene(new EmptyScene());
     };
     cc.game.run('game_canvas');
+    lboost.call_php('php/pageview_stat.php?timezone=' + (new Date()).getTimezoneOffset() / 60);
 };

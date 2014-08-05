@@ -1,7 +1,7 @@
 var cc = cc || {};
 var lboost = lboost || {};
 
-lboost.come_on_share = ['好东西要和大家分享', '晒成绩', '成绩不错？戳这玩意！', '很好玩对不对？'];
+lboost.come_on_share = ['好东西要和大家分享', '土豪秀成绩', '成绩不错？戳这里！', '很好玩对不对？', '如果这里有个按钮……'];
 lboost.rank = [
     [-12138, '未完成游戏，无法评价 T^T', '坚持到底就能有评价了啊 (^ ^;)', '貌似没有到20秒 (-_-)zzz', '撑过20秒，这里会有好东东喔 :-P', '想秀成绩？先保证不“掉线”！ :)'],
     [0, '空气', '1%的生物', '所有非生物', '珊瑚', '所有的微生物'],
@@ -61,23 +61,19 @@ lboost.GameOverDialogue = cc.LayerColor.extend({
         lbl1.setColor(cc.color(255, 64, 64));
         this.addChild(lbl1);
         var lbl2 = cc.LabelTTF.create(
-            '游戏结束！\n \n耗时：\n \n得分：\n \n平均速度：', '', 30, cc.size(size.width, 0)
+            '耗时：\n \n得分：\n \n平均速度：', '', 30, cc.size(size.width, 0)
         );
         lbl2.setAnchorPoint(cc.p(0.5, 1));
-        lbl2.setPosition(size.width / 2, size.height * 0.85);
+        lbl2.setPosition(size.width / 2, size.height * 0.8);
         this.addChild(lbl2);
         var lbl2_1 = cc.LabelTTF.create('', '', 44);
-        lbl2_1.setPosition(size.width * 0.6, size.height * 0.67);
+        lbl2_1.setPosition(size.width * 0.6, size.height * 0.8 - 15);
         lbl2_1.setVisible(false);
         this.addChild(lbl2_1);
         var lbl2_2 = cc.LabelTTF.create('', '', 44);
-        lbl2_2.setPosition(size.width * 0.6, size.height * 0.53);
+        lbl2_2.setPosition(size.width * 0.6, size.height * 0.8 - 84);
         lbl2_2.setVisible(false);
         this.addChild(lbl2_2);
-        var lbl2_3 = cc.LabelTTF.create(this.speed + '/s', '', 36);
-        lbl2_3.setPosition(size.width * 0.7, size.height * 0.39);
-        lbl2_3.setVisible(false);
-        this.addChild(lbl2_3);
 
         // c'mon, share it!
         var shareHintImg = cc.Sprite.create('res/share.png');
@@ -98,12 +94,13 @@ lboost.GameOverDialogue = cc.LayerColor.extend({
             if (tot_time > 2.4) {
                 this.unschedule(show_result);
                 shareHintImg.setVisible(true);
-                lbl2_3.setVisible(true);
+                var s = lbl2.getString();
+                s += ' ' + this.speed + '/s';
                 if (this.rank == '') {
                     // grab a random encouragement from lboost.rank[0]
-                    lbl2.setString(lbl2.getString() + '\n' + lboost.rank[0][lboost.random(1, lboost.rank[0].length - 1)]);
+                    lbl2.setString(s + '\n' + lboost.rank[0][lboost.random(1, lboost.rank[0].length - 1)]);
                 } else {
-                    lbl2.setString(lbl2.getString() + '\n超过了' + this.rank);
+                    lbl2.setString(s + '\n超过了' + this.rank);
                 }
             } else if (tot_time > 1) {
                 var t = (Math.min(tot_time, 1.6) - 1) / 0.6;
@@ -119,7 +116,8 @@ lboost.GameOverDialogue = cc.LayerColor.extend({
 
         // count it!
         lboost.call_php('php/score_stat.php?time=' + lboost.share_data.time
-                + '&score=' + lboost.share_data.score + '&total_games=' + lboost.share_data.total_games);
+                + '&score=' + lboost.share_data.score + '&total_games=' + lboost.share_data.total_games
+                + '&timezone=' + (new Date()).getTimezoneOffset() / 60);
 
         // the 'retry' menu
         var retryItem = cc.MenuItemLabel.create(

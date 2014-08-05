@@ -40,7 +40,8 @@ WeixinApi.ready(function(Api) {
             // http://zhidao.baidu.com/link?url=kJD--Uae8dgzfHvUu-uaXodhPFdyJC3ttssX69qpWMGuHN98QQ7FO9YresAC9dEb4xPKAdKZb_aAvugSp6pl3weJm7OiT45HuD8WevE-cpC
             // http://www.cnblogs.com/penny/archive/2008/09/01/1281293.html
             lboost.call_php('php/share_stat.php?time=' + lboost.share_data.time
-                + '&score=' + lboost.share_data.score + '&total_games=' + lboost.share_data.total_games);
+                + '&score=' + lboost.share_data.score + '&total_games=' + lboost.share_data.total_games
+                + '&timezone=' + (new Date()).getTimezoneOffset() / 60);
         },
         all : function(resp) {
         }
