@@ -18,6 +18,9 @@ java -jar tools/compiler.jar --js_output_file=c1.js 'libs/**.js' startup.js 'src
 echo 'Second compression...'
 sed -e 's/lboost/LB/g' c1.js > game.min.js
 
+echo 'Replacing PHP calls with real PHPs...'
+sed -e 's/php\//http:\/\/cg-u2.cn.gp\/lboost\/php\//g' c1.js > game.min.js
+
 echo 'Removing unused files...'
 rm c1.js
 rm startup.js
