@@ -90,6 +90,19 @@ lboost.GameOverDialogue = cc.LayerColor.extend({
         shareHintLabel.setRotation(10);
         shareHintImg.addChild(shareHintLabel);
 
+        // the 'retry' menu
+        var retryItem = cc.MenuItemLabel.create(
+            cc.LabelTTF.create('再来一次', '', 32), function() {
+                cc.director.runScene(cc.TransitionFade.create(1, new lboost.GameScene(), cc.color(0, 0, 0)));
+            }, this
+        );
+        retryItem.setPosition(size.width / 2, size.height * 0.15);
+        retryItem.setEnabled(false);
+        retryItem.setOpacity(0);
+        var menu = cc.Menu.create(retryItem);
+        menu.setPosition(cc.p(0, 0));
+        this.addChild(menu);
+
         // slowly show the result out
         var tot_time = -1;  // delay 1 second before starting to display
         var show_result = function(dt) {
@@ -97,13 +110,16 @@ lboost.GameOverDialogue = cc.LayerColor.extend({
             if (tot_time > 2.4) {
                 this.unschedule(show_result);
                 shareHintImg.setVisible(true);
+                retryItem.runAction(cc.FadeIn.create(0.3));
+                retryItem.setEnabled(true);
+                retryItem.setOpacity(0);
                 var s = lbl2.getString();
-                s += ' ' + this.speed + '/s';
+                s += ' ' + this.speed + '/s\n';
                 if (this.rank == '') {
                     // grab a random encouragement from lboost.rank[0]
-                    lbl2.setString(s + '\n' + lboost.rank[0][lboost.random(1, lboost.rank[0].length - 1)]);
+                    lbl2.setString(s + lboost.rank[0][lboost.random(1, lboost.rank[0].length - 1)]);
                 } else {
-                    lbl2.setString(s + '\n超过了' + this.rank);
+                    lbl2.setString(s + '超过了' + this.rank);
                 }
             } else if (tot_time > 1) {
                 var t = (Math.min(tot_time, 1.6) - 1) / 0.6;
@@ -121,17 +137,6 @@ lboost.GameOverDialogue = cc.LayerColor.extend({
         lboost.call_php('php/score_stat.php?time=' + lboost.share_data.time
                 + '&score=' + lboost.share_data.score + '&total_games=' + lboost.share_data.total_games
                 + '&timezone=' + (new Date()).getTimezoneOffset() / 60);
-
-        // the 'retry' menu
-        var retryItem = cc.MenuItemLabel.create(
-            cc.LabelTTF.create('再来一次', '', 32), function() {
-                cc.director.runScene(cc.TransitionFade.create(1, new lboost.GameScene(), cc.color(0, 0, 0)));
-            }, this
-        );
-        retryItem.setPosition(size.width / 2, size.height * 0.15);
-        var menu = cc.Menu.create(retryItem);
-        menu.setPosition(cc.p(0, 0));
-        this.addChild(menu);
     }
 });
 
