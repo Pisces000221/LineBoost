@@ -22,6 +22,7 @@ lboost.Track = cc.DrawNode.extend({
         this.lastTournant = tournant;
         this.tournants.push(cc.p(x, y));
     }, setThemeColour: function(colour) {
+        'use strict';
         this.themeColour = colour;
     }
 });

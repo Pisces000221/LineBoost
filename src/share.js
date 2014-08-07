@@ -2,7 +2,7 @@ var cc = cc || {};
 var lboost = lboost || {};
 var WeixinApi = WeixinApi || {};
 
-lboost.share_msg = '我正在玩 Line Boost，根本停不下来！';   // put the text to share here
+lboost.share_msg = lboost.default_share_msg;       // put the text to share here
 lboost.share_data = {}; // put the data that are used to upload record
 lboost.share_data.total_games = 0;
 
@@ -39,9 +39,9 @@ WeixinApi.ready(function(Api) {
             // sharing finished, let's count it
             // http://zhidao.baidu.com/link?url=kJD--Uae8dgzfHvUu-uaXodhPFdyJC3ttssX69qpWMGuHN98QQ7FO9YresAC9dEb4xPKAdKZb_aAvugSp6pl3weJm7OiT45HuD8WevE-cpC
             // http://www.cnblogs.com/penny/archive/2008/09/01/1281293.html
-            lboost.call_php('php/share_stat.php?time=' + lboost.share_data.time
-                + '&score=' + lboost.share_data.score + '&total_games=' + lboost.share_data.total_games
-                + '&timezone=' + (new Date()).getTimezoneOffset() / 60);
+            lboost.call_php('php/share_stat.php?time=' + lboost.share_data.time +
+                '&score=' + lboost.share_data.score + '&total_games=' + lboost.share_data.total_games +
+                '&timezone=' + (new Date()).getTimezoneOffset() / 60);
         },
         all : function(resp) {
         }

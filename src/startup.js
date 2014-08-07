@@ -2,6 +2,7 @@ var lboost = {};
 
 // generate a random integer in range [low, high]
 lboost.random = function(low, high) {
+    'use strict';
     return Math.floor(Math.random() * (high - low + 1) + low);
 };
 var cc = cc || {};
@@ -9,6 +10,7 @@ var lboost = lboost || {};
 
 var EmptyScene = cc.Scene.extend({
     onEnter: function () {
+        'use strict';
         this._super();
         cc.director.runScene(cc.TransitionFade.create(0.5, new lboost.StartupScene(), cc.color(0, 0, 0)));
     }
@@ -16,6 +18,7 @@ var EmptyScene = cc.Scene.extend({
 
 // game startup
 window.onload = function() {
+    'use strict';
     cc.game.onStart = function() {
         cc.Director._getInstance().setDisplayStats(false);
         cc.view.adjustViewPort(true);

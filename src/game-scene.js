@@ -13,7 +13,7 @@ lboost.direction_towards = function(v1, v2) {
         if (cc.pEqual(lboost.board.move[i], cc.pSub(v2, v1))) return i;
 };
 
-lboost.control_button_images = new Array('res/turn.png', 'res/straight.png', 'res/straight.png', 'res/turn.png');
+lboost.control_button_images = ['res/turn.png', 'res/straight.png', 'res/straight.png', 'res/turn.png'];
 lboost.control_button = function(idx, callback) {
     var item = cc.MenuItemImage.create(
         lboost.control_button_images[idx], lboost.control_button_images[idx],
@@ -50,7 +50,7 @@ lboost.GameScene = cc.Scene.extend({
             // turn off scheduler
             this.unschedule(updateTime);
             this.addChild(lboost.GameOverDialogue.create(title, lboost.gameTime - timeRemaining, curTournantIdx), 1000);
-        }
+        };
 
         // the score display (always on the top)
         var scoreLabel = cc.LabelTTF.create('00', '', 48);
@@ -71,7 +71,7 @@ lboost.GameScene = cc.Scene.extend({
                 timeRemaining = 0;  // prevent things like 20.02s in game over dialogue
                 this.endGame('Time up!!');
             }
-        }
+        };
 
         // create the white track
         var t = lboost.Track.create();
@@ -115,7 +115,7 @@ lboost.GameScene = cc.Scene.extend({
         // behaviour when tapped on the control buttons
         var dostep = function(idx) {
             // turn on scheduler if this is the first step
-            if (curTournantIdx == 0) jslinthappy__parent.schedule(updateTime, 0.1);
+            if (curTournantIdx === 0) jslinthappy__parent.schedule(updateTime, 0.1);
             // turn according to the button tapped.
             // if idx is 1 or 2 (tapped 'go straight ahead'), cur_direction will not change.
             cur_direction = turn[cur_direction][idx];
@@ -138,12 +138,12 @@ lboost.GameScene = cc.Scene.extend({
                 scoreLabel.setString((curTournantIdx < 10 ? '0' : '') + curTournantIdx.toString());
             }
             t2.appendTournant(visible_centre.x, visible_centre.y);
-            if (curTournantIdx % lboost.pointsPerGeneration
-              == lboost.pointsPerGeneration - lboost.board.max_visible_points) {
+            if (curTournantIdx % lboost.pointsPerGeneration ===
+              lboost.pointsPerGeneration - lboost.board.max_visible_points) {
                 continue_path_generating();
             }
             return true;
-        }
+        };
 
         // add control buttons. stay on the top
         // tags are 10881~10884
