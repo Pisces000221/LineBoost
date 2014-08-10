@@ -121,6 +121,14 @@ lboost.GameScene = cc.Scene.extend({
             cur_direction = turn[cur_direction][idx];
             arrow.setRotation(rotation[cur_direction]);
             // move
+            if (t.getNumberOfRunningActions() !== 0) {
+                // wow! the player(snail) is fast!
+                // the track's still moving to the current position
+                // but the current position has changed! dostep() was called twice in 0.15 sec!
+                // we move instantly there, that is, we finish the action immediately! NOW!
+                t.stopAllActions();
+                t.setPosition(cc.pSub(cc.p(size.width / 2, size.height / 2), lboost.dataPosToGLPos(visible_centre)));
+            }
             visible_centre = cc.pAdd(visible_centre, lboost.board.move[cur_direction]);
             arrow.setPosition(lboost.dataPosToGLPos(visible_centre));
             t.runAction(cc.EaseSineOut.create(cc.MoveTo.create(

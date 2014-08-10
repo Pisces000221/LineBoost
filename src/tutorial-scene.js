@@ -7,6 +7,7 @@ lboost.TutorialScene = cc.Scene.extend({
         'use strict';
         this._super();
         var size = cc.director.getWinSize();
+        lboost.enableTapToStart(this, new lboost.GameScene());
 
         // the title
         var titleLabel = cc.LabelTTF.create(str.tutorial_title, '', 48);
@@ -21,13 +22,5 @@ lboost.TutorialScene = cc.Scene.extend({
         you.setPosition(size.width * 0.3, size.height * 0.22);
         you.setRotation(15);
         this.addChild(you);
-
-        cc.eventManager.addListener({
-            event: cc.EventListener.TOUCH_ONE_BY_ONE,
-            onTouchBegan: function(touch, event) {
-                cc.director.runScene(cc.TransitionFade.create(1, new lboost.GameScene(), cc.color(0, 0, 0)));
-                return true;
-            }
-        }, this);
     }
 });

@@ -2,6 +2,16 @@ var cc = cc || {};
 var lboost = lboost || {};
 var str = str || {};
 
+lboost.enableTapToStart = function (target, next_scene) {
+    cc.eventManager.addListener({
+        event: cc.EventListener.TOUCH_ONE_BY_ONE,
+        onTouchBegan: function(touch, event) {
+            cc.director.runScene(cc.TransitionFade.create(1, next_scene, cc.color(0, 0, 0)));
+            return true;
+        }
+    }, target);
+}
+
 lboost.StartupScene = cc.Scene.extend({
     showTapToStart: function(label) {
         label.runAction(cc.Sequence.create(
@@ -14,19 +24,12 @@ lboost.StartupScene = cc.Scene.extend({
             })
         ));
     },
-    enableTapToStart: function() {
-        cc.eventManager.addListener({
-            event: cc.EventListener.TOUCH_ONE_BY_ONE,
-            onTouchBegan: function(touch, event) {
-                cc.director.runScene(cc.TransitionFade.create(1, new lboost.TutorialScene(), cc.color(0, 0, 0)));
-                return true;
-            }
-        }, this);
-    },
     onEnter: function () {
         'use strict';
         this._super();
         var size = cc.director.getWinSize();
+        lboost.enableTapToStart(this, new lboost.TutorialScene());
+        this.addChild(lboost.UpdateDialogue.create(), 1000);
 
         // the title
         var titleLabel = cc.LabelTTF.create('Line Boost', '', 58);
@@ -38,7 +41,7 @@ lboost.StartupScene = cc.Scene.extend({
         this.addChild(descLabel);
         this.showTapToStart(descLabel);
         // the version display
-        var verLabel = cc.LabelTTF.create(str.version, '', 28);
+        var verLabel = cc.LabelTTF.create('Rev ' + lboost.rev, '', 28);
         verLabel.setAnchorPoint(cc.p(0, 0));
         verLabel.setPosition(cc.p(0, 20));
         this.addChild(verLabel);
@@ -48,7 +51,5 @@ lboost.StartupScene = cc.Scene.extend({
         engineLabel.setAnchorPoint(cc.p(0.5, 0));
         engineLabel.setPosition(cc.p(size.width / 2, 0));
         this.addChild(engineLabel);
-
-        this.enableTapToStart();
     }
 });

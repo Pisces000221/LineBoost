@@ -8,7 +8,6 @@ var str = str || {};
 
 str.start = '猛戳开始';
 str.engine_ack = '强力外援: Cocos2d-x HTML5';
-str.version = 'Rev 21';
 
 str.tutorial_title = '玩法';
 str.you_are_here = "You're here";
